@@ -26,24 +26,41 @@ public class AppiumTest {
     public static void setUp() throws Exception {
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
-        if (!StringUtils.isEmpty(System.getProperty("key"))) {
-            capabilities.setCapability("key", System.getProperty("key"));
-            if (System.getProperty("platform").equals("ANDROID")) {
-                capabilities
-                        .setCapability(AndroidMobileCapabilityType.APP_PACKAGE,
-                                "com.gratis.android");
+        String platform = System.getProperty("platform", "IOS");
+        String key = System.getProperty("key");
+        String browser = System.getProperty("browser");
+        String version = System.getProperty("version");
+        String udid = System.getProperty("udid");
+        String configuredHubUrl = System.getProperty("hubURL", hubURL);
 
-                capabilities
-                        .setCapability(AndroidMobileCapabilityType.APP_ACTIVITY,
-                                "com.app.gratis.ui.splash.SplashActivity");
-                capabilities.setCapability(CapabilityType.PLATFORM_NAME, Platform.ANDROID);
-                driver = new AndroidDriver<MobileElement>(new URL(hubURL), capabilities);
-            } else {
-                capabilities.setCapability(CapabilityType.PLATFORM_NAME, Platform.IOS);
-                capabilities.setCapability("autoAcceptAlerts", true);
-                capabilities.setCapability("bundleId", "com.pharos.Gratis");
-                driver = new IOSDriver<MobileElement>(new URL(hubURL), capabilities);
-            }
+        // The platform runner does not pass -Dkey for JUnit/Plain Java runs.
+        // Do not gate driver creation on key being present; otherwise driver stays null.
+        if (!StringUtils.isEmpty(key)) {
+            capabilities.setCapability("key", key);
+        }
+
+        if (!StringUtils.isEmpty(browser)) {
+            capabilities.setCapability("deviceName", browser);
+        }
+        if (!StringUtils.isEmpty(version)) {
+            capabilities.setCapability("platformVersion", version);
+        }
+        if (!StringUtils.isEmpty(udid)) {
+            capabilities.setCapability("udid", udid);
+        }
+
+        if ("ANDROID".equalsIgnoreCase(platform)) {
+            capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE,
+                    "com.gratis.android");
+            capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY,
+                    "com.app.gratis.ui.splash.SplashActivity");
+            capabilities.setCapability(CapabilityType.PLATFORM_NAME, Platform.ANDROID);
+            driver = new AndroidDriver<MobileElement>(new URL(configuredHubUrl), capabilities);
+        } else {
+            capabilities.setCapability(CapabilityType.PLATFORM_NAME, Platform.IOS);
+            capabilities.setCapability("autoAcceptAlerts", true);
+            capabilities.setCapability("bundleId", "com.pharos.Gratis");
+            driver = new IOSDriver<MobileElement>(new URL(configuredHubUrl), capabilities);
         }
     }
 
