@@ -6,48 +6,55 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-/** Plain Java Appium test class. */
+/**
+ * Plain Java Appium tests executed by the Testinium JUnit platform.
+ * Each scenario is a JUnit 5 test method.
+ */
 public class AppiumTest {
 
     public static final String hubURL = "http://172.25.1.159:4444/wd/hub";
     //public static final String hubURL = "http://172.25.6.122:4444/wd/hub";
-    protected static AppiumDriver<MobileElement> driver;
+    private AppiumDriver<MobileElement> driver;
 
-    public static void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
-        String platform = System.getProperty("platform", "IOS");
         String key = System.getProperty("key");
-        String browser = System.getProperty("browser");
-        String version = System.getProperty("version");
-        String udid = System.getProperty("udid");
+        if (key == null || key.trim().isEmpty()) {
+            // Testinium may expose the same execution key through the process
+            // environment when the plain JUnit launcher is used.
+            key = System.getenv("key");
+        }
+        if (key == null || key.trim().isEmpty()) {
+            key = System.getenv("TESTINIUM_KEY");
+        }
+        if (key == null || key.trim().isEmpty()) {
+            key = System.getenv("TESTINIUM_ACCESS_KEY");
+        }
+        if (key == null || key.trim().isEmpty()) {
+            key = System.getProperty("testinium:key");
+        }
+
+        if (key == null || key.trim().isEmpty()) {
+            throw new IllegalStateException(
+                    "Testinium key is missing. Expected System.getProperty(\"key\") or environment variable \"key\" / \"TESTINIUM_KEY\".");
+        }
+
+        System.setProperty("key", key);
+        capabilities.setCapability("key", key);
+
+        String platform = System.getProperty("platform", "IOS");
         String configuredHubUrl = System.getProperty("hubURL", hubURL);
-
-        // The platform runner does not pass -Dkey for JUnit/Plain Java runs.
-        // Do not gate driver creation on key being present; otherwise driver stays null.
-        if (!StringUtils.isEmpty(key)) {
-            capabilities.setCapability("key", key);
-        }
-
-        if (!StringUtils.isEmpty(browser)) {
-            capabilities.setCapability("deviceName", browser);
-        }
-        if (!StringUtils.isEmpty(version)) {
-            capabilities.setCapability("platformVersion", version);
-        }
-        if (!StringUtils.isEmpty(udid)) {
-            capabilities.setCapability("udid", udid);
-        }
 
         if ("ANDROID".equalsIgnoreCase(platform)) {
             capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE,
@@ -64,33 +71,32 @@ public class AppiumTest {
         }
     }
 
-    public static void tearDown() {
+    @AfterEach
+    public void tearDown() {
         if (driver != null) {
             driver.quit();
             driver = null;
         }
     }
 
-    public static void waitSeconds(int seconds) {
+    public void waitSeconds(int seconds) {
         try {
             TimeUnit.SECONDS.sleep(seconds);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    public static void clickElementById(String elementId) {
+    public void clickElementById(String elementId) {
         WebElement element = driver.findElement(By.id(elementId));
         element.click();
     }
 
-    public static void clickElementByXpath(String xpath) {
+    public void clickElementByXpath(String xpath) {
         WebElement element = driver.findElement(By.xpath(xpath));
         element.click();
     }
-
-    // Each scenario creates and closes its own Appium session, matching the original behavior.
 
     /**
      * Scenario: BasicTiklamalarIOS01
@@ -98,14 +104,9 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarIOS01() throws Exception {
-        setUp();
-        try {
-            waitSeconds(15);
-            clickElementByXpath("//*[contains(@text, '')]");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(15);
+        clickElementByXpath("//*[contains(@text, '')]");
+        waitSeconds(2);
     }
 
     /**
@@ -114,65 +115,60 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarIOS02() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
     }
 
     /**
@@ -181,18 +177,13 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarIOS03() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
     }
 
     /**
@@ -201,25 +192,20 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarIOS04() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        waitSeconds(2);
     }
 
     /**
@@ -228,49 +214,44 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarIOS05() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
     }
 
     /**
@@ -279,14 +260,9 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarIOS01Wait() throws Exception {
-        setUp();
-        try {
-            waitSeconds(420);
-            clickElementByXpath("//*[contains(@text, '')]");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(420);
+        clickElementByXpath("//*[contains(@text, '')]");
+        waitSeconds(2);
     }
 
     /**
@@ -295,14 +271,9 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroid01() throws Exception {
-        setUp();
-        try {
-            waitSeconds(15);
-            clickElementByXpath("//*[contains(@resource-id, 'android:id/button2') and contains(@text, 'İPTAL')]");
-            waitSeconds(5);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(15);
+        clickElementByXpath("//*[contains(@resource-id, 'android:id/button2') and contains(@text, 'İPTAL')]");
+        waitSeconds(5);
     }
 
     /**
@@ -311,14 +282,9 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroid01Wait() throws Exception {
-        setUp();
-        try {
-            waitSeconds(420);
-            clickElementByXpath("//*[contains(@resource-id, 'android:id/button2') and contains(@text, 'İPTAL')]");
-            waitSeconds(5);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(420);
+        clickElementByXpath("//*[contains(@resource-id, 'android:id/button2') and contains(@text, 'İPTAL')]");
+        waitSeconds(5);
     }
 
     /**
@@ -327,42 +293,37 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroid02() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
     }
 
     /**
@@ -371,42 +332,37 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroid03() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
     }
 
     /**
@@ -415,28 +371,23 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroid04() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
     }
 
     /**
@@ -445,22 +396,17 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroid05() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
     }
 
     /**
@@ -469,54 +415,49 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroid06() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
     }
 
     /**
@@ -525,28 +466,23 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroidFail() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaignsadsadsad");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_campaign");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_trademarks");
-            waitSeconds(2);
-            clickElementById("com.gratis.android:id/nav_graph_categories");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
+        waitSeconds(5);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaignsadsadsad");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_campaign");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_trademarks");
+        waitSeconds(2);
+        clickElementById("com.gratis.android:id/nav_graph_categories");
+        waitSeconds(2);
     }
 
     /**
@@ -555,132 +491,31 @@ public class AppiumTest {
      */
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarIOSFail() throws Exception {
-        setUp();
-        try {
-            waitSeconds(5);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalarsadsadsad']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
-            waitSeconds(2);
-            clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
-            waitSeconds(2);
-        } finally {
-            tearDown();
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        AppiumTest test = new AppiumTest();
-        String selectedScenario = args.length > 0 ? args[0] : System.getProperty("scenario");
-
-        if (!StringUtils.isEmpty(selectedScenario)) {
-            test.runScenario(selectedScenario);
-            return;
-        }
-
-        List<String> failures = new ArrayList<String>();
-        test.runScenarioAndCollect("BasicTiklamalarIOS01", failures);
-        test.runScenarioAndCollect("BasicTiklamalarIOS02", failures);
-        test.runScenarioAndCollect("BasicTiklamalarIOS03", failures);
-        test.runScenarioAndCollect("BasicTiklamalarIOS04", failures);
-        test.runScenarioAndCollect("BasicTiklamalarIOS05", failures);
-        test.runScenarioAndCollect("BasicTiklamalarIOS01Wait", failures);
-        test.runScenarioAndCollect("BasicTiklamalarAndroid01", failures);
-        test.runScenarioAndCollect("BasicTiklamalarAndroid01Wait", failures);
-        test.runScenarioAndCollect("BasicTiklamalarAndroid02", failures);
-        test.runScenarioAndCollect("BasicTiklamalarAndroid03", failures);
-        test.runScenarioAndCollect("BasicTiklamalarAndroid04", failures);
-        test.runScenarioAndCollect("BasicTiklamalarAndroid05", failures);
-        test.runScenarioAndCollect("BasicTiklamalarAndroid06", failures);
-        test.runScenarioAndCollect("BasicTiklamalarAndroidFail", failures);
-        test.runScenarioAndCollect("BasicTiklamalarIOSFail", failures);
-
-        if (!failures.isEmpty()) {
-            throw new RuntimeException("Failed scenarios: " + failures);
-        }
-    }
-
-    public void runScenario(String scenarioName) throws Exception {
-        if (scenarioName == null) {
-            throw new IllegalArgumentException("Scenario name cannot be null.");
-        }
-
-        switch (scenarioName) {
-            case "BasicTiklamalarIOS01":
-                BasicTiklamalarIOS01();
-                break;
-            case "BasicTiklamalarIOS02":
-                BasicTiklamalarIOS02();
-                break;
-            case "BasicTiklamalarIOS03":
-                BasicTiklamalarIOS03();
-                break;
-            case "BasicTiklamalarIOS04":
-                BasicTiklamalarIOS04();
-                break;
-            case "BasicTiklamalarIOS05":
-                BasicTiklamalarIOS05();
-                break;
-            case "BasicTiklamalarIOS01Wait":
-                BasicTiklamalarIOS01Wait();
-                break;
-            case "BasicTiklamalarAndroid01":
-                BasicTiklamalarAndroid01();
-                break;
-            case "BasicTiklamalarAndroid01Wait":
-                BasicTiklamalarAndroid01Wait();
-                break;
-            case "BasicTiklamalarAndroid02":
-                BasicTiklamalarAndroid02();
-                break;
-            case "BasicTiklamalarAndroid03":
-                BasicTiklamalarAndroid03();
-                break;
-            case "BasicTiklamalarAndroid04":
-                BasicTiklamalarAndroid04();
-                break;
-            case "BasicTiklamalarAndroid05":
-                BasicTiklamalarAndroid05();
-                break;
-            case "BasicTiklamalarAndroid06":
-                BasicTiklamalarAndroid06();
-                break;
-            case "BasicTiklamalarAndroidFail":
-                BasicTiklamalarAndroidFail();
-                break;
-            case "BasicTiklamalarIOSFail":
-                BasicTiklamalarIOSFail();
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown scenario: " + scenarioName);
-        }
-    }
-
-    private void runScenarioAndCollect(String scenarioName, List<String> failures) {
-        try {
-            System.out.println("========== " + scenarioName + " ==========");
-            runScenario(scenarioName);
-        } catch (Exception e) {
-            failures.add(scenarioName);
-            e.printStackTrace();
-        }
+        waitSeconds(5);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalarsadsadsad']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Markalar']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kategoriler']");
+        waitSeconds(2);
+        clickElementByXpath("//XCUIElementTypeButton[@name='Kampanyalar']");
+        waitSeconds(2);
     }
 }
+
