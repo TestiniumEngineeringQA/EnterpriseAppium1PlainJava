@@ -79,7 +79,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarIOS01
      * Test id: @BasicTiklamalarIOS01
      */
-    public static void BasicTiklamalarIOS01() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarIOS01() throws Exception {
         setUp();
         try {
             waitSeconds(15);
@@ -94,7 +95,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarIOS02
      * Test id: @BasicTiklamalarIOS02
      */
-    public static void BasicTiklamalarIOS02() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarIOS02() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -160,7 +162,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarIOS03
      * Test id: @BasicTiklamalarIOS03
      */
-    public static void BasicTiklamalarIOS03() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarIOS03() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -179,7 +182,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarIOS04
      * Test id: @BasicTiklamalarIOS04
      */
-    public static void BasicTiklamalarIOS04() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarIOS04() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -205,7 +209,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarIOS05
      * Test id: @BasicTiklamalarIOS05
      */
-    public static void BasicTiklamalarIOS05() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarIOS05() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -255,7 +260,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarIOS01Wait
      * Test id: @BasicTiklamalarIOS01Wait
      */
-    public static void BasicTiklamalarIOS01Wait() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarIOS01Wait() throws Exception {
         setUp();
         try {
             waitSeconds(420);
@@ -270,7 +276,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarAndroid01
      * Test id: @BasicTiklamalarAndroid01
      */
-    public static void BasicTiklamalarAndroid01() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarAndroid01() throws Exception {
         setUp();
         try {
             waitSeconds(15);
@@ -285,7 +292,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarAndroid01Wait
      * Test id: @BasicTiklamalarAndroid01Wait
      */
-    public static void BasicTiklamalarAndroid01Wait() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarAndroid01Wait() throws Exception {
         setUp();
         try {
             waitSeconds(420);
@@ -300,7 +308,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarAndroid02
      * Test id: @BasicTiklamalarAndroid02
      */
-    public static void BasicTiklamalarAndroid02() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarAndroid02() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -343,7 +352,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarAndroid03
      * Test id: @BasicTiklamalarAndroid03
      */
-    public static void BasicTiklamalarAndroid03() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarAndroid03() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -386,7 +396,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarAndroid04
      * Test id: @BasicTiklamalarAndroid04
      */
-    public static void BasicTiklamalarAndroid04() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarAndroid04() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -415,7 +426,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarAndroid05
      * Test id: @BasicTiklamalarAndroid05
      */
-    public static void BasicTiklamalarAndroid05() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarAndroid05() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -438,7 +450,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarAndroid06
      * Test id: @BasicTiklamalarAndroid06
      */
-    public static void BasicTiklamalarAndroid06() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarAndroid06() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -493,7 +506,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarAndroidFail
      * Test id: @BasicTiklamalarAndroidFail
      */
-    public static void BasicTiklamalarAndroidFail() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarAndroidFail() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -522,7 +536,8 @@ public class AppiumTest {
      * Scenario: BasicTiklamalarIOS02
      * Test id: @BasicTiklamalarIOSFail
      */
-    public static void BasicTiklamalarIOSFail() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void BasicTiklamalarIOSFail() throws Exception {
         setUp();
         try {
             waitSeconds(5);
@@ -556,36 +571,37 @@ public class AppiumTest {
     }
 
     public static void main(String[] args) throws Exception {
+        AppiumTest test = new AppiumTest();
         String selectedScenario = args.length > 0 ? args[0] : System.getProperty("scenario");
 
         if (!StringUtils.isEmpty(selectedScenario)) {
-            runScenario(selectedScenario);
+            test.runScenario(selectedScenario);
             return;
         }
 
         List<String> failures = new ArrayList<String>();
-        runScenarioAndCollect("BasicTiklamalarIOS01", failures);
-        runScenarioAndCollect("BasicTiklamalarIOS02", failures);
-        runScenarioAndCollect("BasicTiklamalarIOS03", failures);
-        runScenarioAndCollect("BasicTiklamalarIOS04", failures);
-        runScenarioAndCollect("BasicTiklamalarIOS05", failures);
-        runScenarioAndCollect("BasicTiklamalarIOS01Wait", failures);
-        runScenarioAndCollect("BasicTiklamalarAndroid01", failures);
-        runScenarioAndCollect("BasicTiklamalarAndroid01Wait", failures);
-        runScenarioAndCollect("BasicTiklamalarAndroid02", failures);
-        runScenarioAndCollect("BasicTiklamalarAndroid03", failures);
-        runScenarioAndCollect("BasicTiklamalarAndroid04", failures);
-        runScenarioAndCollect("BasicTiklamalarAndroid05", failures);
-        runScenarioAndCollect("BasicTiklamalarAndroid06", failures);
-        runScenarioAndCollect("BasicTiklamalarAndroidFail", failures);
-        runScenarioAndCollect("BasicTiklamalarIOSFail", failures);
+        test.runScenarioAndCollect("BasicTiklamalarIOS01", failures);
+        test.runScenarioAndCollect("BasicTiklamalarIOS02", failures);
+        test.runScenarioAndCollect("BasicTiklamalarIOS03", failures);
+        test.runScenarioAndCollect("BasicTiklamalarIOS04", failures);
+        test.runScenarioAndCollect("BasicTiklamalarIOS05", failures);
+        test.runScenarioAndCollect("BasicTiklamalarIOS01Wait", failures);
+        test.runScenarioAndCollect("BasicTiklamalarAndroid01", failures);
+        test.runScenarioAndCollect("BasicTiklamalarAndroid01Wait", failures);
+        test.runScenarioAndCollect("BasicTiklamalarAndroid02", failures);
+        test.runScenarioAndCollect("BasicTiklamalarAndroid03", failures);
+        test.runScenarioAndCollect("BasicTiklamalarAndroid04", failures);
+        test.runScenarioAndCollect("BasicTiklamalarAndroid05", failures);
+        test.runScenarioAndCollect("BasicTiklamalarAndroid06", failures);
+        test.runScenarioAndCollect("BasicTiklamalarAndroidFail", failures);
+        test.runScenarioAndCollect("BasicTiklamalarIOSFail", failures);
 
         if (!failures.isEmpty()) {
             throw new RuntimeException("Failed scenarios: " + failures);
         }
     }
 
-    public static void runScenario(String scenarioName) throws Exception {
+    public void runScenario(String scenarioName) throws Exception {
         if (scenarioName == null) {
             throw new IllegalArgumentException("Scenario name cannot be null.");
         }
@@ -641,7 +657,7 @@ public class AppiumTest {
         }
     }
 
-    private static void runScenarioAndCollect(String scenarioName, List<String> failures) {
+    private void runScenarioAndCollect(String scenarioName, List<String> failures) {
         try {
             System.out.println("========== " + scenarioName + " ==========");
             runScenario(scenarioName);
