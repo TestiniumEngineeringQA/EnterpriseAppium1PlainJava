@@ -21,7 +21,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 public class AppiumTest {
 
-    public static final String hubURL = "http://172.25.1.159:4444/wd/hub";
+    public static final String hubURL = "http://172.25.1.12:4444/wd/hub";
     //public static final String hubURL = "http://172.25.6.122:4444/wd/hub";
     private AppiumDriver<MobileElement> driver;
 
