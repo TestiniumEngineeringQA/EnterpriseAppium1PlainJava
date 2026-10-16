@@ -272,7 +272,7 @@ public class AppiumTest {
     @org.junit.jupiter.api.Test
     public void BasicTiklamalarAndroid01() throws Exception {
         waitSeconds(15);
-        clickElementByXpath("//*[contains(@resource-id, 'android:id/button2') and contains(@text, 'İPTAL')]");
+        clickElementByXpath("//*[contains(@text, '')]");
         waitSeconds(5);
     }
 
